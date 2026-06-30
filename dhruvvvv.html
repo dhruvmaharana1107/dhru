@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Meri Jaan ?</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background:#fff5f7;
+overflow:hidden;
+color:#331a24;
+}
+
+/* Premium Light Pink & Golden Gradient Background */
+.bg{
+position:fixed;inset:0;
+background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 45%, #fef3c7 100%);
+z-index:-2;
+}
+
+.title{
+position:fixed;top:40px;width:100%;text-align:center;
+font-size:2.3rem;font-weight:bold;
+background: linear-gradient(to right, #db2777, #d97706, #ec4899);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow:0 0 30px rgba(217,119,6,0.15);
+z-index:5;
+letter-spacing: 1.5px;
+}
+
+.slider-container {
+position: relative;
+height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+z-index: 2;
+}
+
+.slider{
+width: 100%;
+display:flex;
+justify-content:center;
+align-items:center;
+height: 300px;
+}
+
+.slide{
+position:absolute;
+width:90%;max-width:550px;
+background:rgba(255, 255, 255, 0.65);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+padding:50px 40px;
+border-radius:24px;
+border: 1px solid rgba(217, 119, 6, 0.15);
+box-shadow:0 20px 40px -15px rgba(162, 57, 107, 0.15);
+opacity:0;
+pointer-events: none;
+transform:scale(.95) translateY(10px);
+transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+text-align:center;
+}
+
+.slide.active{
+opacity:1;
+pointer-events: auto;
+transform:scale(1) translateY(0);
+}
+
+.caption{
+font-size:1.8rem;
+font-weight: 500;
+color: #4c1d3b;
+letter-spacing: 0.5px;
+line-height: 1.4;
+}
+
+/* Navigation Controls */
+.controls {
+display: flex;
+gap: 20px;
+margin-top: 40px;
+z-index: 5;
+}
+
+.nav-btn {
+background: rgba(255, 255, 255, 0.6);
+border: 1px solid rgba(217, 119, 6, 0.25);
+color: #b45309;
+width: 60px;
+height: 60px;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 1.2rem;
+transition: all 0.3s ease;
+box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+margin-top: 0;
+}
+
+.nav-btn:hover {
+background: rgba(255, 255, 255, 0.9);
+color: #d97706;
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(217,119,6,0.2);
+}
+
+/* Floating Elements & Balloons */
+.heart{
+position:fixed;bottom:-20px;
+animation:float 8s linear forwards;
+pointer-events:none;
+filter: drop-shadow(0 0 5px rgba(0,0,0,0.05));
+z-index: 1;
+}
+
+.balloon {
+position: fixed;
+bottom: -100px;
+width: 40px;
+height: 50px;
+border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+animation: flyUp 12s linear forwards;
+pointer-events: none;
+z-index: 0;
+opacity: 0.7;
+}
+.balloon::after {
+content: "??";
+font-size: 2.5rem;
+position: absolute;
+top: 0; left: 0;
+}
+
+@keyframes float{
+to{transform:translateY(-110vh) rotate(360deg);opacity:0}
+}
+
+@keyframes flyUp {
+0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+10% { opacity: 0.7; }
+90% { opacity: 0.7; }
+100% { transform: translateY(-120vh) translateX(50px) rotate(15deg); opacity: 0; }
+}
+
+#letterOverlay{
+position:fixed;inset:0;
+background:rgba(255, 245, 247, 0.94);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+display:none;
+justify-content:center;
+align-items:center;
+padding:20px;
+z-index: 10;
+}
+
+.letter{
+max-width:650px;
+max-height:80vh;
+overflow-y:auto;
+background:rgba(255, 255, 255, 0.95);
+padding:45px;
+border-radius:24px;
+line-height:1.8;
+color: #4a2838;
+border: 1px solid rgba(217, 119, 6, 0.2);
+box-shadow: 0 25px 50px rgba(162, 57, 107, 0.12);
+}
+
+.letter h1 {
+color: #db2777;
+margin-bottom: 25px;
+font-size: 2.2rem;
+font-weight: 600;
+border-bottom: 2px solid #fef3c7;
+padding-bottom: 10px;
+}
+
+.letter p {
+margin-bottom: 18px;
+font-size: 1.05rem;
+text-align: left;
+}
+
+button.action-btn {
+padding:14px 35px;border:none;
+background: linear-gradient(135deg, #ec4899, #d97706);
+color:white;cursor:pointer;
+margin-top:25px;
+font-weight: 600;
+letter-spacing: 0.5px;
+box-shadow: 0 4px 20px rgba(217, 119, 6, 0.25);
+transition: 0.3s;
+border-radius: 50px;
+}
+
+button.action-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4);
+}
+
+.letter::-webkit-scrollbar { width: 6px; }
+.letter::-webkit-scrollbar-track { background: transparent; }
+.letter::-webkit-scrollbar-thumb { background: rgba(217, 119, 6, 0.2); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="title">Happy Birthday Meri Jaan ?</div>
+
+<div class="slider-container">
+    <div class="slider">
+
+        <div class="slide active">
+            <div class="caption"> Happiest Birthday Meri baby ????</div>
+        </div>
+
+        <div class="slide">
+            <div class="caption"> Tum hamesha mere dil par raj karti hai meri machi ????</div>
+        </div>
+
+        <div class="slide">
+            <div class="caption">Tum meri shining star aur meri strength hai yaar ????</div>
+        </div>
+
+        <div class="slide" id="lastSlide">
+            <div class="caption">Happy Birthday, Meri Jaan ??</div>
+            <button class="action-btn" onclick="openLetter()">Open My Letter ??</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="nav-btn" onclick="prevSlide()">?</button>
+        <button class="nav-btn" onclick="nextSlide()">?</button>
+    </div>
+</div>
+
+<div id="letterOverlay">
+<div class="letter">
+<h1>Dear Meri Jaan ??</h1>
+
+<p><b>Meri Pyari Wife,</b></p>
+
+<p>Aaj ka din mere liye khushiyon ka din hai — <b>tumhara Birthday</b>. ??</p>
+
+<p>Sabse pehle, <b>Happy Birthday meri jaan!</b> ???</p>
+
+<p>Main shayad hamesha apne dil ki baat utni achhi tarah se nahi keh pata, lekin aaj main tumhe batana chahta hoon ki meri zindagi ki sabse khoobsurat cheez tum ho. Tumne har mushkil waqt mein mera saath diya, mujhe samjha, mujhe sambhala aur bina kisi shart ke pyaar kiya.</p>
+
+<p>Mujhe pata hai ki pichhle kuch waqt se mere behaviour ne tumhe hurt kiya hai. Shayad maine kuch aisi baatein kahi ya aise reactions diye jo mujhe nahi dene chahiye the. Uske liye main dil se <b>sorry</b> hoon. Main kabhi bhi tumhe dukh dena nahi chahta tha. Agar meri kisi baat, gusse ya laparwahi se tumhari aankhon mein aansu aaye hain, to uska mujhe sach mein afsos hai.</p>
+
+<p>Tum sirf meri wife nahi ho, tum meri best friend, meri strength aur meri har khushi ki wajah ho. Main tumhari value karta hoon aur har din tumse aur zyada pyaar karta hoon. ??</p>
+
+<p>Aaj, tumhare Birthday par, main ek wada karta hoon ki main apni galtiyon se seekhunga, tumhe aur zyada samajhne ki koshish karunga aur tumhe hamesha woh respect, care aur pyaar dunga jiski tum haqdar ho.</p>
+
+<p>Thank you meri zindagi mein aane ke liye, meri har khushi ka hissa banne ke liye aur mujhe itna pyaar dene ke liye. Main dua karta hoon ki tumhari zindagi hamesha muskurahaton, sehat, khushiyon aur pyaar se bhari rahe.</p>
+
+<p style="text-align:right;margin-top:25px"><b>— Tumhara Labeeb ?</b></p>
+<button class="action-btn" onclick="closeLetter()">Close</button>
+</div>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+
+function showSlide(index) {
+    slides[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+}
+
+function nextSlide() {
+    showSlide(current + 1);
+}
+
+function prevSlide() {
+    showSlide(current - 1);
+}
+
+// Floating Hearts & Stars Effect
+setInterval(()=>{
+const h=document.createElement('div');
+h.className='heart';
+h.innerHTML=['??','??','?','??','??','??','??'][Math.floor(Math.random()*7)];
+h.style.left=Math.random()*100+'vw';
+h.style.fontSize=(16+Math.random()*20)+'px';
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),8000);
+},600);
+
+// Continuous Flying Balloons Effect
+setInterval(()=>{
+const b=document.createElement('div');
+b.className='balloon';
+b.style.left=Math.random()*100+'vw';
+const scale = 0.5 + Math.random()*0.8;
+b.style.transform = `scale(${scale})`;
+document.body.appendChild(b);
+setTimeout(()=>b.remove(),12000);
+},1500);
+
+function openLetter(){
+document.getElementById('letterOverlay').style.display='flex';
+
+// Premium Confetti Burst Effect
+confetti({
+  particleCount: 150,
+  spread: 80,
+  origin: { y: 0.6 },
+  colors: ['#f472b6', '#db2777', '#d97706', '#ffffff', '#fb7185']
+});
+
+setTimeout(() => {
+  confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0 } });
+  confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1 } });
+}, 250);
+}
+
+function closeLetter(){
+document.getElementById('letterOverlay').style.display='none';
+}
+</script>
+
+</body>
+</html>
